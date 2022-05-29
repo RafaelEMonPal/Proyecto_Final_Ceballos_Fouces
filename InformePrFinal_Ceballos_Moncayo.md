@@ -10,14 +10,13 @@ Proyecto_Final_Ceballos_Moncayo
 -Rafael E. Moncayo Palate
 
 
-Introducción:
+## Introducción:
 
 La intención de este proyecto, desde buen inicio, siempre ha sido poder trabajar con las opciones que nos ofrece la ESP32 destinada al audio y a su procesado. Y, como personas que estamos metidas dentro del mundo del hardware de audio, se nos encendió la bombilla rápidamente cuando nos dimos cuenta de que podríamos hacer un intento de réplica de un sintetizador real llamado PO-35 que está destinado a la sintetización de la voz.*
 Los PO (Pocket Operator) son una familia de sintetizadores muy pequeños de la empresa Teenage Engineering. Estos aparte de poder sintetizar sonido vienen con capacidad de grabar, reproducir y secuenciar el audio introducido. Nosotros decimos que nuestro proyecto es un “intento” de lo que es el PO-35 porque es bastante obvio que no podríamos llegar a hacer un componente de este calibre, pero al menos intentarlo con las opciones mínimas de grabadora que ofrece el hardware junto con un menú en el display.
 
-Rafa: Librerías, audio/input.
 
-Material:
+## Material:
 
 El montaje requiere de un material bastante extenso pero que no ha sido complicado conseguir porque más de la mayoría lo teníamos gracias a prácticas anteriores. 
 Así que, enumerando todo, para la realización de este proyecto necesitamos:
@@ -37,11 +36,11 @@ Un cable USB mini
 1x ESP32
 
 
-Código:
+## Código:
 
-Main:
+### Main:
 
-RECORD:
+### RECORD:
 
 Función void() donde iniciamos la grabación y la guardamos en un archivo .wav dentro de la SD. Los parámetros de entrada son: I2S Sampler *input (señal entrada I2S del micrófono) y const char *fname (nombre del fichero). 
 ```cpp
@@ -83,7 +82,7 @@ input->stop();
 }
 ```
 
-PLAY:
+### PLAY:
 
 Función void() donde leemos el .wav escrito anteriormente en la SD y lo reproducimos por el speaker. Los parámetros de entrada són: Output *output (señal salida I2S del speaker) y const char *fname (nombre del fichero).
 ```cpp
@@ -129,7 +128,7 @@ output->stop();
 ```
 
 
-DISPLAY MENÚ:
+### DISPLAY MENÚ:
 
 Esta es una función que se repetirá todo el rato porque lo que nos interesa es que se mantenga el menú en el Display de manera continua y por eso será la única acción que estará en el void loop(). No hace falta meterle nada por parámetros porque todo lo que usa el menú (altavoz, micro, display, botones,…) estará declarado fuera o dentro de este. Las primeras líneas de código nos permiten definir las variables que nos representarán los botones.Estos los guardaremos como valores enteros sacados del digitalread del pin en el que estén conectados.
 ```cpp
@@ -198,7 +197,7 @@ Algo parecido sucederá con la alternativa Reproducir. Se creará el altavoz  y 
 ```
 Como opción final tenemos los créditos donde simplemente saldrá el nombre de los integrantes del grupo que ha hecho este proyecto y un pequeño comentario por parte de los mismos. 
 
-SETUP():
+### SETUP():
 
 En primera instancia se hace un Serial.begin(115200) y seguidamente se crea el objeto de la SD, el código también da la opción de que se pueda usar la memoria interna de la Esp 32 (SPIFFS). La SD se crea con los siguientes parámetros: el nombre de la dirección de la SD, y los pines SPI para comunicarnos con el lector de tarjetas.
 ```cpp
@@ -251,12 +250,12 @@ Seguidamente se definen los 4 botones del menú y pasamos a limpiar el display y
 ```
 
 
-Librerías:
+## Librerías:
 Ahora comentaremos por encima las librerías que usamos en el código principal y un poco más en profundidad las que nos parecen más importantes para la correcta comprensión del funcionamiento del código principal .
 En todos los .h hay un #pragma once que hace que el fichero solo se incluya en el programa una vez en una sola compilación.
 
 
-WAV:
+### WAV:
 El WAVFile.h nos declara, sobre todo, lo que es el header del fichero wav.
 ```cpp
 _wav_header()
@@ -311,7 +310,7 @@ int WAVFileReader::read(int16_t *samples, int count)
 
 
 
-SD():
+### SD():
 
 Aquí definimos el constructor de la clase SDCard para nuestra tarjeta, reemplazando la librería SD original. Primero se declara el mount_point donde montaremos la SD y una variable ret que se usará para detectar errores durante el proceso.
 ```cpp
@@ -376,16 +375,7 @@ ESP_LOGI(TAG, "SDCard mounted at: %s", m_mount_point.c_str());
  
 ```
 
-
-
-
-
-
-
-
-
-
-I2S Sampler:
+### I2S Sampler:
 
 I2SSampler actua cómo clase base tanto para I2SMEMSSampler como para ADCSampler.
 ```cpp
@@ -436,7 +426,7 @@ void I2SSampler::stop()
 }
 ```
 
-I2S MEMS Sampler:
+### I2S MEMS Sampler:
 
 I2S MEMS Sampler es una clase derivada de I2S Sampler preparada para establecer
 una conexión I2S con micrófonos MEMS digitales. En el constructor definimos las variables
@@ -487,7 +477,7 @@ int I2SMEMSSampler::read(int16_t *samples, int count)
 }
 ```
 
-Output:
+### Output:
 
 Output actúa como clase base tanto para I2S Output como para DAC Output.
 ```cpp
@@ -557,7 +547,7 @@ size_t bytes_written = 0;
 }
 ```
 
-I2S Output:
+### I2S Output:
 
 I2S Output es una clase derivada de Output con las definiciones necesarias de los métodos start y constructor para la correcta inicialización de la conexión I2S con el periférico, además de los pines.
 ```cpp
@@ -611,10 +601,12 @@ Finalmente las últimas dos funciones són: i2s_zero_dma_buffer que limpia el bu
 }
 ```
 
-Conclusiones:
+## Conclusiones:
 
 Con este proyecto en funcionamiento delante de nosotros, podemos decir con seguridad que nos ha ayudado mucho a consolidar los conocimientos adquiridos en esta asignatura, a perder el miedo delante de las librerías grandes y sobre todo a analizar código para una fácil implementación de este. La resolución de problemas que hemos tenido durante el proceso de tanto el montaje como del código nos ha sido útil para poder entender más en profundidad los buses que usamos: I2C, I2S, SPI y nos ha mostrado lo que se puede hacer con los SDMMC.
 
 Aún con esas, nos deja un sabor de boca agridulce porque no hemos podido acabar con el broche de oro que nos habíamos propuesto al inicio del proyecto. Para empezar, el proyecto era el que hemos acabado y puesto en marcha, pero queríamos ir más allá implementando la librería arduinoFFT para poder mostrar el espectro frecuencial por la pantalla del display. El uso del código no tenía una alta dificultad pero lo que nos fallaba era el micrófono y la señal que nos llegaba de este y salía del altavoz. El micrófono era un micrófono MEM (MicroElectroMecánico) que es un tipo de micrófono que se basa de, principalmente, cápsulas electret yque tienen integrado convertidores ADC, por tanto este nos proporciona señal digital y no podíamos usar esa señal porque era directamente digital y para poder hacer la FFT necesitamos señal analógica.
 Y por último: el reverse. Entendiendo el funcionamiento de las librerías necesarias para escribir y leer la señal dentro de un wav, creíamos que podríamos ser capaces de girar los samples del WAV, respetando los 16 bits de cabecera, y poder reproducir un wav de fin a inicio. En ningún momento tuvimos en cuenta que el tipo de compresión de audio también era algo que afectaba a los samples del sonido registrado y por tanto lo que nosotros creíamos que era una tarea muy simple acabó siendo una funcionalidad del proyecto que estaba por encima de nuestras posibilidades. Siendo así la cosa, nos volveremos a poner con estas funcionalidades en un futuro porque le vemos mucho potencial de mejora a este proyecto.
 
+### Video del proyecto final:
+https://www.youtube.com/watch?v=xJ3hdiIrnAk
